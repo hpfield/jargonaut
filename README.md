@@ -12,3 +12,7 @@ Before running, the pythonpath needs to be set to the Llama3 repo. `cd` into the
 ### Working Files
 
 Working files are in `llama-models/models/scripts/`
+
+
+### Original work
+https://huggingface.co/i-dot-ai
