@@ -197,26 +197,14 @@ def generate_qa_embedding_pairs_chat_style(
 
 
 def finetune_embeddings(train_nodes, val_nodes, checkpoint_dir, temperature=0.6, top_p=0.9):
-    # llama_llm = LlamaLLM(
-    #     ckpt_dir=checkpoint_dir,
-    #     temperature=temperature,
-    #     top_p=top_p
-    # )
 
-    # Generate datasets
-    # train_dataset = generate_qa_embedding_pairs(
-    #     llm=llama_llm, nodes=train_nodes
-    # )
-    # val_dataset = generate_qa_embedding_pairs(
-    #     llm=llama_llm, nodes=val_nodes
-    # )
-
-    #! Current attempt to make mem management better
     generator = get_generator()
 
+    print("Generating QA pairs for training set.")
     train_dataset = generate_qa_embedding_pairs_chat_style(
         nodes=train_nodes, generator=generator
     )
+    print("Generating QA pairs for validation set.")
     val_dataset = generate_qa_embedding_pairs_chat_style(
         nodes=val_nodes, generator=generator
     )
@@ -224,8 +212,6 @@ def finetune_embeddings(train_nodes, val_nodes, checkpoint_dir, temperature=0.6,
     train_dataset.save_json("train_dataset.json")
     val_dataset.save_json("val_dataset.json")
 
-    # Free GPU memory
-    # del llama_llm
     torch.cuda.empty_cache()
 
     # Finetune the model

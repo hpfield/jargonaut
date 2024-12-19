@@ -54,7 +54,7 @@ from models.llama3.api.datatypes import (
 def get_generator(
     ckpt_dir=DEFAULT_CKPT_DIR,
     tokenizer_path=TOKENIZER_PATH,
-    max_seq_len=8192,
+    max_seq_len=4096,
     max_batch_size=4,
     model_parallel_size=None
 ):
