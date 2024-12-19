@@ -10,6 +10,10 @@ import torch
 import pandas as pd
 from tqdm import tqdm
 from sklearn.model_selection import train_test_split
+import re
+import uuid
+import warnings
+from typing import List
 
 from llama_index.core import VectorStoreIndex
 from llama_index.core.node_parser import SentenceSplitter
@@ -21,7 +25,7 @@ from sentence_transformers.evaluation import InformationRetrievalEvaluator
 from sentence_transformers import SentenceTransformer
 
 # Import from utils
-from stages.utils import LlamaLLM, get_generator
+from stages.utils import LlamaLLM, get_generator, UserMessage, SystemMessage
 
 logging.basicConfig(
     level=logging.INFO,
@@ -39,15 +43,6 @@ def process_data_to_nodes(data_list, verbose=False):
     if verbose:
         print(f"Created {len(nodes)} TextNodes.")
     return nodes
-
-import json
-import logging
-import re
-import uuid
-import warnings
-from tqdm import tqdm
-import torch
-from typing import List
 
 # from stages.utils import UserMessage, SystemMessage
 
@@ -110,7 +105,7 @@ def generate_qa_embedding_pairs_chat_style(
         logger.setLevel(logging.DEBUG)
 
     # Define a system message for the model
-    system_message = "You are an AI assistant that generates only a specified number of search queries. You receive a document and a number of queries to generate. You must respond with only the requested number of search queries, one per line, and nothing else."
+    system_message = SystemMessage(content="You are an AI assistant that generates only a specified number of search queries. You receive a document and a number of queries to generate. You must respond with only the requested number of search queries, one per line, and nothing else.")
     
 
     for node_id, text in tqdm(list(node_dict.items())[start_index:], initial=start_index):
@@ -120,7 +115,9 @@ def generate_qa_embedding_pairs_chat_style(
             num_questions_per_chunk=num_questions_per_chunk
         )
 
-        # chat_history = [system_message, UserMessage(content=user_prompt)]
+        user_msg = UserMessage(content=user_prompt)
+
+        chat_history = [system_message, user_msg]
 
         retry_count = 0
         success = False
@@ -131,7 +128,7 @@ def generate_qa_embedding_pairs_chat_style(
                 # Adjust the arguments as needed based on your generator's API
                 # If your Llama generator expects a different method name or parameters, update accordingly.
                 result = generator.chat_completion(
-                    chat_history=user_prompt,
+                    chat_history,
                     max_gen_len=None,
                     temperature=0.0,
                     top_p=0.9,
@@ -200,33 +197,35 @@ def generate_qa_embedding_pairs_chat_style(
 
 
 def finetune_embeddings(train_nodes, val_nodes, checkpoint_dir, temperature=0.6, top_p=0.9):
-    llama_llm = LlamaLLM(
-        ckpt_dir=checkpoint_dir,
-        temperature=temperature,
-        top_p=top_p
-    )
+    # llama_llm = LlamaLLM(
+    #     ckpt_dir=checkpoint_dir,
+    #     temperature=temperature,
+    #     top_p=top_p
+    # )
 
     # Generate datasets
-    train_dataset = generate_qa_embedding_pairs(
-        llm=llama_llm, nodes=train_nodes
-    )
-    val_dataset = generate_qa_embedding_pairs(
-        llm=llama_llm, nodes=val_nodes
-    )
+    # train_dataset = generate_qa_embedding_pairs(
+    #     llm=llama_llm, nodes=train_nodes
+    # )
+    # val_dataset = generate_qa_embedding_pairs(
+    #     llm=llama_llm, nodes=val_nodes
+    # )
 
     #! Current attempt to make mem management better
-    # train_dataset = generate_qa_embedding_pairs_chat_style(
-    #     nodes=train_nodes
-    # )
-    # val_dataset = generate_qa_embedding_pairs_chat_style(
-    #     nodes=val_nodes
-    # )
+    generator = get_generator()
+
+    train_dataset = generate_qa_embedding_pairs_chat_style(
+        nodes=train_nodes, generator=generator
+    )
+    val_dataset = generate_qa_embedding_pairs_chat_style(
+        nodes=val_nodes, generator=generator
+    )
 
     train_dataset.save_json("train_dataset.json")
     val_dataset.save_json("val_dataset.json")
 
     # Free GPU memory
-    del llama_llm
+    # del llama_llm
     torch.cuda.empty_cache()
 
     # Finetune the model

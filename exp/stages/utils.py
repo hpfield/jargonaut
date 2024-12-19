@@ -43,8 +43,13 @@ TOKENIZER_PATH = str(PROJECT_ROOT / "llama-models" / "models" / "llama3" / "api"
 DEFAULT_CKPT_DIR = os.getenv('LLAMA_CKPT_DIR', str(Path.home() / ".llama/checkpoints/Meta-Llama3.1-8B-Instruct"))
 
 # Import LLM classes after paths are set
-from models.llama3.api.datatypes import UserMessage
 from models.llama3.reference_impl.generation import Llama
+from models.llama3.api.datatypes import (
+        UserMessage,
+        SystemMessage,
+        CompletionMessage,
+        StopReason
+    )
 
 def get_generator(
     ckpt_dir=DEFAULT_CKPT_DIR,
