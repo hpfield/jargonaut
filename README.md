@@ -69,7 +69,7 @@ jargonaut/
     ├── outputs/             <-- Timestamped output directories
     ├── prompts/
     │   └── custom_qa_generate_prompt.txt
-    ├── run_all.py           <-- Example runner (alternative to pipeline_runner)
+    ├── run_all.py           <-- Orchestrates multi-step pipeline
     └── utils/
         ├── data_utils.py
         ├── llm_utils.py
