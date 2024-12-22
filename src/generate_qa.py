@@ -77,12 +77,13 @@ def main(cfg: DictConfig):
 
     # 8. Optionally reduce data for demonstration
     logger.info("Generating QA pairs for training set.")
-    small_train_nodes = train_nodes[:cfg.training.train_subset_size]
+    if cfg.training.train_subset_size:
+        train_nodes = train_nodes[:cfg.training.train_subset_size]
     train_dataset_path = str(Path(run_output_dir) / "train_dataset.json")
 
     train_dataset = generate_qa_embedding_pairs_chat_style(
         logger=logger,
-        nodes=small_train_nodes,
+        nodes=train_nodes,
         generator=generator,
         qa_generate_prompt_str=prompt_str,
         qa_system_prompt=system_prompt_str,
@@ -94,12 +95,13 @@ def main(cfg: DictConfig):
     )
 
     logger.info("Generating QA pairs for validation set.")
-    small_val_nodes = val_nodes[:cfg.training.val_subset_size]
+    if cfg.training.train_subset_size:
+        val_nodes = val_nodes[:cfg.training.val_subset_size]
     val_dataset_path = str(Path(run_output_dir) / "val_dataset.json")
 
     val_dataset = generate_qa_embedding_pairs_chat_style(
         logger=logger,
-        nodes=small_val_nodes,
+        nodes=val_nodes,
         generator=generator,
         qa_generate_prompt_str=prompt_str,
         qa_system_prompt=system_prompt_str,

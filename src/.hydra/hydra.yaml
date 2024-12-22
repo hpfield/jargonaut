@@ -83,7 +83,7 @@ hydra:
     - hydra.mode=RUN
     task: []
   job:
-    name: demo_server
+    name: generate_qa
     chdir: null
     override_dirname: ''
     id: ???
