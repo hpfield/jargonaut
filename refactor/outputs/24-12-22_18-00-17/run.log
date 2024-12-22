@@ -1,0 +1,9 @@
+2024-12-22 18:00:17,798 - INFO - Starting main script.
+2024-12-22 18:00:17,799 - INFO - Config saved to: /home/rz20505/Documents/jargonaut/refactor/outputs/24-12-22_18-00-17/config.yaml
+2024-12-22 18:00:17,913 - INFO - Loaded 4216 items from ../govuk-policy-qa-pairs/policy_papers_small.json
+2024-12-22 18:00:17,914 - INFO - Split data into 3372 training and 844 validation items.
+2024-12-22 18:00:17,914 - INFO - Processing 3372 items into TextNode objects.
+2024-12-22 18:00:17,939 - INFO - Created 3372 TextNodes.
+2024-12-22 18:00:17,939 - INFO - Processing 844 items into TextNode objects.
+2024-12-22 18:00:17,946 - INFO - Created 844 TextNodes.
+2024-12-22 18:00:17,947 - INFO - Initializing the Llama generator.

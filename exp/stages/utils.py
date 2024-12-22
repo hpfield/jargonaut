@@ -67,28 +67,3 @@ def get_generator(
         model_parallel_size=model_parallel_size,
     )
     return generator
-
-class LlamaLLM:
-    def __init__(
-        self,
-        ckpt_dir: str,
-        temperature: float = 0.6,
-        top_p: float = 0.9,
-        max_seq_len: int = 8192,
-        max_batch_size: int = 1,
-        model_parallel_size: int = None
-    ):
-        self.generator = Llama.build(
-            ckpt_dir=ckpt_dir,
-            tokenizer_path=TOKENIZER_PATH,
-            max_seq_len=max_seq_len,
-            max_batch_size=max_batch_size,
-            model_parallel_size=model_parallel_size,
-        )
-        self.temperature = temperature
-        self.top_p = top_p
-
-    def complete(self, prompt: str) -> str:
-        dialog = [UserMessage(content=prompt)]
-        result = self.generator.chat_completion(dialog, temperature=self.temperature, top_p=self.top_p)
-        return result.generation.content

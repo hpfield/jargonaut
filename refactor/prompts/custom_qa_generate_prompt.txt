@@ -1,0 +1,5 @@
+Write {num_questions_per_chunk} search queries someone might write that would be answered by this document. 
+This is to create a Q&A dataset to finetune an embeddings model so that documents like these can be found more efficiently. 
+You must only respond with the search queries on separate lines, nothing else. 
+The document you are using is: 
+{context_str}

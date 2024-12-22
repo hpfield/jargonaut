@@ -1,0 +1,8 @@
+2024-12-22 17:17:12,558 - INFO - Starting main script.
+2024-12-22 17:17:12,559 - INFO - Config saved to: /home/rz20505/Documents/jargonaut/refactor/outputs/24-12-22_17-17-12/used_config.yaml
+2024-12-22 17:17:12,673 - INFO - Loaded 4216 items from ../govuk-policy-qa-pairs/policy_papers_small.json
+2024-12-22 17:17:12,674 - INFO - Split data into 3372 training and 844 validation items.
+2024-12-22 17:17:12,674 - INFO - Processing 3372 items into TextNode objects.
+2024-12-22 17:17:12,699 - INFO - Created 3372 TextNodes.
+2024-12-22 17:17:12,699 - INFO - Processing 844 items into TextNode objects.
+2024-12-22 17:17:12,705 - INFO - Created 844 TextNodes.

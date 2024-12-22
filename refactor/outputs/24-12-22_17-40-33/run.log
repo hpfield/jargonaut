@@ -1,0 +1,15 @@
+2024-12-22 17:40:33,446 - INFO - Starting main script.
+2024-12-22 17:40:33,446 - INFO - Config saved to: /home/rz20505/Documents/jargonaut/refactor/outputs/24-12-22_17-40-33/config.yaml
+2024-12-22 17:40:33,575 - INFO - Loaded 4216 items from ../govuk-policy-qa-pairs/policy_papers_small.json
+2024-12-22 17:40:33,576 - INFO - Split data into 3372 training and 844 validation items.
+2024-12-22 17:40:33,577 - INFO - Processing 3372 items into TextNode objects.
+2024-12-22 17:40:33,601 - INFO - Created 3372 TextNodes.
+2024-12-22 17:40:33,602 - INFO - Processing 844 items into TextNode objects.
+2024-12-22 17:40:33,608 - INFO - Created 844 TextNodes.
+2024-12-22 17:40:33,609 - INFO - Initializing the Llama generator.
+2024-12-22 17:40:40,017 - INFO - Starting finetuning process.
+2024-12-22 17:40:40,017 - INFO - Generating QA pairs for training set.
+2024-12-22 17:40:45,369 - INFO - Final dataset saved.
+2024-12-22 17:40:45,369 - INFO - Generating QA pairs for validation set.
+2024-12-22 17:40:49,963 - INFO - Final dataset saved.
+2024-12-22 17:40:49,963 - INFO - QA pair generation complete. Beginning actual finetuning.

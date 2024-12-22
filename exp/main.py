@@ -25,7 +25,7 @@ from sentence_transformers.evaluation import InformationRetrievalEvaluator
 from sentence_transformers import SentenceTransformer
 
 # Import from utils
-from stages.utils import LlamaLLM, get_generator, UserMessage, SystemMessage
+from stages.utils import get_generator, UserMessage, SystemMessage
 
 logging.basicConfig(
     level=logging.INFO,
