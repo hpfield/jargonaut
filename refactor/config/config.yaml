@@ -11,8 +11,10 @@ paths:
   output_dir: "outputs"
   prompt_file: "prompts/custom_qa_generate_prompt.txt"
   # These two lines let the finetune script know where to load the QA pairs:
-  train_dataset_path: "outputs/24-12-22_18-18-56/train_dataset.json"
-  val_dataset_path: "outputs/24-12-22_18-18-56/val_dataset.json"
+  train_dataset_path: "outputs/generate_qa/24-12-22_18-36-21/train_dataset.json"
+  val_dataset_path: "outputs/generate_qa/24-12-22_18-36-21/val_dataset.json"
+  finetuned_model_path: "outputs/finetune/24-12-22_18-37-23/finetuned_model"
+  doc_embeddings_path: "outputs/build_embeddings/24-12-22_19-00-38/doc_embeddings.pkl"
 
 llm:
   ckpt_dir: ${oc.env:HOME}/.llama/checkpoints/Meta-Llama3.1-8B-Instruct
@@ -32,3 +34,8 @@ training:
   on_failure: "continue"
   train_subset_size: 5
   val_subset_size: 5
+
+server:
+  host: "127.0.0.1"
+  port: 5000
+  debug: false

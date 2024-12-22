@@ -29,7 +29,7 @@ def main(cfg: DictConfig):
     3) Optionally evaluates on val_dataset.
     """
 
-    logger = setup_logger(cfg.paths.output_dir)
+    logger = setup_logger(f'{cfg.paths.output_dir}/finetune')
     run_output_dir = logger.handlers[0].baseFilename.rsplit("/", 1)[0]
     logger.info("Starting finetune script.")
 

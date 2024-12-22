@@ -27,7 +27,7 @@ def main(cfg: DictConfig):
     """
 
     # 1. Setup logging & output dir
-    logger = setup_logger(cfg.paths.output_dir)
+    logger = setup_logger(f'{cfg.paths.output_dir}/generate_qa')
     run_output_dir = logger.handlers[0].baseFilename.rsplit("/", 1)[0]
     logger.info("Starting generate_qa script.")
 
