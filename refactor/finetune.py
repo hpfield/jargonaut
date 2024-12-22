@@ -5,6 +5,14 @@ from omegaconf import DictConfig, OmegaConf
 import json
 from pathlib import Path
 import torch
+import os
+os.environ["TF_CPP_MIN_LOG_LEVEL"] = "3"
+
+import logging
+logging.getLogger("transformers").setLevel(logging.ERROR)
+logging.getLogger("sentence_transformers").setLevel(logging.ERROR)
+logging.getLogger("datasets").setLevel(logging.ERROR)
+logging.getLogger("tensorflow").setLevel(logging.ERROR)
 
 from utils.logger_utils import setup_logger
 from llama_index.finetuning import SentenceTransformersFinetuneEngine

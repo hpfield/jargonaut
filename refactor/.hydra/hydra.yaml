@@ -83,7 +83,7 @@ hydra:
     - hydra.mode=RUN
     task: []
   job:
-    name: main
+    name: finetune
     chdir: null
     override_dirname: ''
     id: ???
