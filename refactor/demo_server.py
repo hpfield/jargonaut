@@ -30,11 +30,52 @@ def index():
         for doc in DOC_EMBEDDINGS:
             doc_vec = np.array(doc["embedding"], dtype=np.float32)
             sim = cosine_similarity(query_vector, doc_vec)
-            results.append((doc["id"], doc["text"], sim))
+            results.append({
+                "id": doc["id"],
+                "header": doc["header"],
+                "url": doc["url"],
+                "split_from_large_doc": doc["split_from_large_doc"],
+                "text": doc["text"],
+                "similarity": sim
+            })
 
-        # Sort by similarity descending & take top 5
-        results.sort(key=lambda x: x[2], reverse=True)
-        top_results = results[:5]
+        # Sort descending
+        results.sort(key=lambda x: x["similarity"], reverse=True)
+
+        # Group if needed
+        grouped_results = {}
+        for r in results:
+            key = (r["header"], r["url"])
+            truncated_text = r["text"]
+            max_len = 300  # or any length you want
+            if len(truncated_text) > max_len:
+                truncated_text = truncated_text[:max_len] + "..."
+            r["text"] = truncated_text
+            if r["split_from_large_doc"]:
+                # If it's from a "large doc," we only want one entry per (header, url),
+                # so we pick the highest similarity chunk for that key.
+                if key not in grouped_results:
+                    grouped_results[key] = r  # store the first/higher-sim chunk
+                else:
+                    # If we already have an entry for that key, 
+                    # keep the one with higher similarity
+                    if r["similarity"] > grouped_results[key]["similarity"]:
+                        grouped_results[key] = r
+            else:
+                # if not split_from_large_doc, treat it as unique
+                # might store with a distinct key, e.g. a unique (header, url, id).
+                unique_key = (r["header"], r["url"], r["id"])
+                grouped_results[unique_key] = r
+
+        # final list
+        final_results = list(grouped_results.values())
+
+        # Optionally re-sort them by similarity
+        final_results.sort(key=lambda x: x["similarity"], reverse=True)
+
+        # take top K
+        top_results = final_results[:5]
+
 
         return render_template_string(TEMPLATE, query=query, results=top_results)
     else:
@@ -68,18 +109,14 @@ TEMPLATE = """
           </div>
         </div>
       </form>
-      {% if results %}
-        <h2 class="mt-4">Results</h2>
-        <ol>
-          {% for (doc_id, doc_text, sim) in results %}
-          <li class="mb-3">
-            <div><strong>Doc ID:</strong> {{ doc_id }}</div>
-            <div><strong>Similarity:</strong> {{ "{:.4f}".format(sim) }}</div>
-            <div><strong>Document:</strong> {{ doc_text }}</div>
-          </li>
-          {% endfor %}
-        </ol>
-      {% endif %}
+      {% for r in results %}
+        <li class="mb-3">
+            <div><strong>Header:</strong> {{ r.header }}</div>
+            <div><strong>URL:</strong> <a href="{{ r.url }}">{{ r.url }}</a></div>
+            <div><strong>Similarity:</strong> {{ r.similarity | round(4) }}</div>
+            <div><strong>Text:</strong> {{ r.text }}</div>
+        </li>
+        {% endfor %}
     </div>
   </body>
 </html>

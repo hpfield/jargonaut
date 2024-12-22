@@ -67,10 +67,14 @@ def main(cfg: DictConfig):
     embeddings = embed_model.encode(texts, batch_size=16, show_progress_bar=True)
 
     for idx, emb in enumerate(embeddings):
+        metadata = nodes[idx].extra_info  # Or however you store metadata
         doc_embeddings.append({
-            "id": nodes[idx].node_id,  # or idx
+            "id": nodes[idx].node_id,
             "text": texts[idx],
-            "embedding": emb.tolist()  # store as list if using JSON/pickle
+            "embedding": emb.tolist(),
+            "header": metadata.get("header", ""),
+            "url": metadata.get("url", ""),
+            "split_from_large_doc": metadata.get("split_from_large_doc", False),
         })
 
     # 5) Save to disk

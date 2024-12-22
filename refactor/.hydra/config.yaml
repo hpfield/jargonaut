@@ -2,10 +2,10 @@ paths:
   data_file: ../govuk-policy-qa-pairs/policy_papers_small.json
   output_dir: outputs
   prompt_file: prompts/custom_qa_generate_prompt.txt
-  train_dataset_path: outputs/generate_qa/24-12-22_18-36-21/train_dataset.json
-  val_dataset_path: outputs/generate_qa/24-12-22_18-36-21/val_dataset.json
-  finetuned_model_path: outputs/finetune/24-12-22_18-37-23/finetuned_model
-  doc_embeddings_path: outputs/build_embeddings/24-12-22_19-00-38/doc_embeddings.pkl
+  train_dataset_path: outputs/generate_qa/24-12-22_19-45-34/train_dataset.json
+  val_dataset_path: outputs/generate_qa/24-12-22_19-45-34/val_dataset.json
+  finetuned_model_path: outputs/finetune/24-12-22_19-47-38/finetuned_model
+  doc_embeddings_path: outputs/build_embeddings/24-12-22_19-48-19/doc_embeddings.pkl
 llm:
   ckpt_dir: ${oc.env:HOME}/.llama/checkpoints/Meta-Llama3.1-8B-Instruct
   tokenizer_path: ../llama-models/models/llama3/api/tokenizer.model
