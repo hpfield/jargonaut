@@ -60,6 +60,10 @@ def main(cfg: DictConfig):
     with open(prompt_file, "r") as pf:
         prompt_str = pf.read()
 
+    system_prompt_file = cfg.paths.system_prompt_file
+    with open(system_prompt_file, "r") as pf:
+        system_prompt_str = pf.read()
+
     # 7. Instantiate the LLM generator
     logger.info("Initializing the Llama generator.")
     generator = get_generator(
@@ -81,6 +85,7 @@ def main(cfg: DictConfig):
         nodes=small_train_nodes,
         generator=generator,
         qa_generate_prompt_str=prompt_str,
+        qa_system_prompt=system_prompt_str,
         num_questions_per_chunk=cfg.training.num_questions_per_chunk,
         retry_limit=cfg.training.retry_limit,
         on_failure=cfg.training.on_failure,
@@ -97,6 +102,7 @@ def main(cfg: DictConfig):
         nodes=small_val_nodes,
         generator=generator,
         qa_generate_prompt_str=prompt_str,
+        qa_system_prompt=system_prompt_str,
         num_questions_per_chunk=cfg.training.num_questions_per_chunk,
         retry_limit=cfg.training.retry_limit,
         on_failure=cfg.training.on_failure,

@@ -1,9 +1,3 @@
-defaults:
-- override hydra/job_logging: none
-- override hydra/hydra_logging: none
-hydra:
-  run:
-    dir: .
 llm:
   ckpt_dir: ${oc.env:HOME}/.llama/checkpoints/Meta-Llama3.1-8B-Instruct
   max_batch_size: 4
@@ -14,13 +8,13 @@ llm:
   top_p: 0.9
 paths:
   data_file: ../govuk-policy-qa-pairs/policy_papers_small.json
-  doc_embeddings_path: outputs/build_embeddings/24-12-22_21-03-33/doc_embeddings.pkl
-  finetuned_model_path: outputs/finetune/24-12-22_21-03-24/finetuned_model
+  doc_embeddings_path: outputs/build_embeddings/24-12-22_20-16-08/doc_embeddings.pkl
+  finetuned_model_path: outputs/finetune/24-12-22_20-16-00/finetuned_model
   output_dir: outputs
   prompt_file: prompts/custom_qa_generate_prompt.txt
   system_prompt_file: prompts/custom_qa_generate_system.txt
-  train_dataset_path: outputs/generate_qa/24-12-22_21-03-06/train_dataset.json
-  val_dataset_path: outputs/generate_qa/24-12-22_21-03-06/val_dataset.json
+  train_dataset_path: outputs/generate_qa/24-12-22_20-15-41/train_dataset.json
+  val_dataset_path: outputs/generate_qa/24-12-22_20-15-41/val_dataset.json
 server:
   debug: false
   host: 127.0.0.1
@@ -30,7 +24,6 @@ training:
   on_failure: continue
   random_state: 42
   retry_limit: 3
-  epochs: 5
   save_every: 500
   test_size: 0.2
   train_subset_size: 5

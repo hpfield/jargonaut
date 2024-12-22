@@ -57,6 +57,7 @@ def generate_qa_embedding_pairs_chat_style(
     nodes: List[TextNode],
     generator,
     qa_generate_prompt_str: str,
+    qa_system_prompt: str,
     num_questions_per_chunk: int,
     retry_limit: int,
     on_failure: str,
@@ -72,11 +73,7 @@ def generate_qa_embedding_pairs_chat_style(
         for node in nodes
     }
 
-    system_message = SystemMessage(
-        content="You are an AI assistant that generates only a specified number of search queries. "
-                "You receive a document and a number of queries to generate. You must respond with only "
-                "the requested number of search queries, one per line, and nothing else."
-    )
+    system_message = SystemMessage(content=qa_system_prompt)
 
     save_counter = 0
 

@@ -8,12 +8,13 @@ llm:
   top_p: 0.9
 paths:
   data_file: ../govuk-policy-qa-pairs/policy_papers_small.json
-  doc_embeddings_path: outputs/build_embeddings/24-12-22_20-16-08/doc_embeddings.pkl
-  finetuned_model_path: outputs/finetune/24-12-22_20-16-00/finetuned_model
+  doc_embeddings_path: outputs/build_embeddings/24-12-22_21-03-33/doc_embeddings.pkl
+  finetuned_model_path: outputs/finetune/24-12-22_21-03-24/finetuned_model
   output_dir: outputs
   prompt_file: prompts/custom_qa_generate_prompt.txt
-  train_dataset_path: outputs/generate_qa/24-12-22_20-15-41/train_dataset.json
-  val_dataset_path: outputs/generate_qa/24-12-22_20-15-41/val_dataset.json
+  system_prompt_file: prompts/custom_qa_generate_system.txt
+  train_dataset_path: outputs/generate_qa/24-12-22_21-03-06/train_dataset.json
+  val_dataset_path: outputs/generate_qa/24-12-22_21-03-06/val_dataset.json
 server:
   debug: false
   host: 127.0.0.1

@@ -59,6 +59,7 @@ def main(cfg: DictConfig):
         model_id="BAAI/bge-small-en",
         model_output_path=str(Path(run_output_dir) / "finetuned_model"),
         val_dataset=val_dataset,
+        epochs=cfg.training.epochs,
         device='cuda',  # or "cpu" if you prefer
     )
     finetune_engine.finetune()
