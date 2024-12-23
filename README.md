@@ -314,6 +314,7 @@ python finetune.py
 ```
 
 Loads Q&A data, trains a SentenceTransformers embedding model, and saves it in `finetuned_model/`.
+
 3\. **Build Embeddings** with `build_embeddings.py`:
 
 ```
@@ -337,7 +338,7 @@ Starts a **Flask** server on `http://127.0.0.1:5000`. Enter a query, see the top
 ## Additional Notes
 
 * **LLM Integration**: If you use the `Llama` generator, ensure your `ckpt_dir` and `tokenizer_path` in `config.yaml` are valid.
-* **Custom Data**: Replace `data_preparation.raw_data_file` with your own domain-specific JSON. Then retrain the pipeline for your specialized text. It is expected that your data file will be json and contain fields `url`, `header` and `content`. Any deviation from this will require code refactoring across all pipeline files in `src/`.
+* **Custom Data**: Replace `data_preparation.raw_data_file` with your own domain-specific JSON. Then retrain the pipeline for your specialised text. Its expected that your data file will be JSON and contain fields `url`, `header` and `content`. Any deviation from this will require code refactoring across all pipeline files in `src/`.
 
 
 
