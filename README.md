@@ -238,7 +238,6 @@ training:
 
   before running.
 
-  \
 
 ## Usage
 
