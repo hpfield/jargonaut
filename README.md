@@ -18,6 +18,8 @@ This repository has been tested on Ubuntu 22.04 and has the following [hardware 
 
 
 
+
+
 1. [Overview](#overview)
 2. [Repository Structure](#repository-structure)
 3. [Setup](#setup)
@@ -32,6 +34,8 @@ This repository has been tested on Ubuntu 22.04 and has the following [hardware 
 ## Overview
 
 Many organizations handle **jargon-heavy** or **domain-specific** documents where off-the-shelf embeddings fall short. Jargonaut aims to **bridge that gap** by:
+
+
 
 
 
@@ -84,7 +88,7 @@ jargonaut/
 
 ### Key Directories
 
-* `govuk-policy-qa-pairs/` & `legislation_2021-2023_qa/`: Example data directories with specialized text.
+* `govuk-policy-qa-pairs/`: Main data directory containing government policy documents.
 * `llama-models/`: Contains local Llama code and references (if you use the Llama-based generator).
 * `src/outputs/`: Where each script’s run logs, config snapshots, and artifacts (like `train_dataset.json`, `finetuned_model/`, `doc_embeddings.pkl`) are stored in timestamped folders.
 
@@ -93,18 +97,16 @@ jargonaut/
 
 
 
-
 1. **Clone this repository**:
 
-```javascript
+```
 git clone https://github.com/YourUsername/jargonaut.git
 cd jargonaut
 ```
 
-
 2\. **Create and activate the conda environment**:
 
-```javascript
+```
 conda env create -f environment.yml
 conda activate jargonaut
 ```
@@ -112,6 +114,7 @@ conda activate jargonaut
 This installs PyTorch, SentenceTransformers, Flask, Hydra, and other dependencies listed in `environment.yml`.
 
 3\. **Unzip data** in `govuk-policy-qa-pairs`:
+
 ```
 cd govuk-policy-qa-pairs
 gunzip policy_papers.json.gz
@@ -221,15 +224,15 @@ training:
 
 * **Command-Line Overrides**: Hydra allows you to override any config parameter at runtime. For example:
 
-  ```javascript
-  bashCopy codepython pipeline_runner.py --stage=finetune training.epochs=10
+  ```
+  bashCopy codepython run_all.py --stage=finetune training.epochs=10
   
   ```
 
   This sets `training.epochs` to `10` instead of `5`, overriding the default in `config.yaml`.
 * **Environment Variables**: If a field references `$HOME` or uses syntax like `${oc.env:HOME}`, Hydra will expand it using the current environment. You can change it by setting:
 
-  ```javascript
+  ```
   bashCopy codeexport HOME=/path/to/your/home
   
   ```
@@ -251,9 +254,6 @@ python run_all.py --stage=all
 This:
 
 
-
-
-
 1. **Generates Q&A pairs** from your data (via LLM).
 2. **Finetunes** a SentenceTransformers model on the Q&A.
 3. **Builds embeddings** for your entire corpus.
@@ -273,10 +273,7 @@ After each stage, `pipeline_runner.py` looks at the newly created timestamped ou
 
 ### Individual Scripts
 
-If you prefer a more manual approach:
-
-
-
+If you prefer a manual approach:
 
 
 1. **Generate Q&A** with `generate_qa.py`:
@@ -319,8 +316,7 @@ Starts a **Flask** server on `http://127.0.0.1:5000`. Enter a query, see the top
 ## Additional Notes
 
 * **LLM Integration**: If you use the `Llama` generator, ensure your `ckpt_dir` and `tokenizer_path` in `config.yaml` are valid.
-* **Data Exploration**: The `eda/` folder has notebooks (like `policy-data.ipynb`) for exploring the dataset.
-* **Custom Data**: Replace `paths.data_file` with your own domain-specific JSON or CSV. Then retrain the pipeline for your specialized text. It is expected that your data file will be json and contain fields `url`, `header` and `content`. Any deviation from this will require code refactoring across all pipeline files in `src/`.
+* **Custom Data**: Replace `data_preparation.raw_data_file` with your own domain-specific JSON. Then retrain the pipeline for your specialized text. It is expected that your data file will be json and contain fields `url`, `header` and `content`. Any deviation from this will require code refactoring across all pipeline files in `src/`.
 
 
 
