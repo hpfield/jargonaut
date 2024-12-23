@@ -53,19 +53,11 @@ Below is a simplified view of the directory layout. Some subdirectories contain 
 
 ```
 jargonaut/
-├── eda/
-│   ├── policy-data.ipynb
-│   └── token-stats.ipynb
 ├── environment.yml
 ├── govuk-policy-qa-pairs/
 │   ├── data/
-│   ├── policy_papers.json
-│   ├── policy_papers_small.json
-│   └── README.md
-├── legislation_2021-2023_qa/
-│   ├── test_all_3qs.csv
-│   └── train_all_3qs.csv
-├── llama-models/
+│   └── policy_papers.json
+├── llama-models/            <-- See setup section
 │   ├── models/...
 │   └── ...
 ├── README.md                <-- You are here
@@ -79,7 +71,8 @@ jargonaut/
     ├── outputs/             <-- Timestamped output directories
     ├── prepare_data.py      <-- Text chunking
     ├── prompts/
-    │   └── custom_qa_generate_prompt.txt
+    │   ├── custom_qa_generate_prompt.txt
+    │   └── custom_qa_generate_system.txt
     ├── run_all.py           <-- Orchestrates multi-step pipeline
     └── utils/
         ├── data_utils.py
