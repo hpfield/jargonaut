@@ -14,14 +14,17 @@ By leveraging **Hydra** for centralized configuration, **LLMs** for question gen
 
 
 
+
+
 1. [Overview](#overview)
 2. [Repository Structure](#repository-structure)
 3. [Setup](#setup)
-4. [Usage](#usage)
+4. [Configuring the Pipeline](#configuring-the-pipeline)
+5. [Usage](#usage)
    * [End-to-End Pipeline](#end-to-end-pipeline)
    * [Individual Scripts](#individual-scripts)
-5. [Additional Notes](#additional-notes)
-6. [License](#license)
+6. [Additional Notes](#additional-notes)
+7. [License](#license)
 
 
 ## Overview
@@ -32,11 +35,14 @@ Many organizations handle **jargon-heavy** or **domain-specific** documents wher
 
 
 
+
+
 1. **Creating Synthetic Q&A**: We prompt an LLM to generate realistic user queries for each document.
 2. **Finetuning**: We train an embeddings model on these Q&A pairs, enhancing its understanding of specialized terminology.
 3. **Building Document Embeddings**: We compute embeddings for an entire corpus using our finetuned model.
 4. **Serving a Local Search Demo**: A Flask-based UI allows users to enter a query and see top-matching documents (with truncated text, metadata, etc.).
 
+This repo builds on the success of a project by the [Incubator for Aritificial Intelligence](https://ai.gov.uk/), using a [huggingface dataset](https://huggingface.co/datasets/i-dot-ai/govuk-policy-qa-pairs) of government policy docuemnts. We improve data security with a locally running, open-source LLM (Llama-3.1) and focus the relevance of generated Q&A pairs by creating a custom version of the `generate_qa_embedding_pairs` function from llama-index.
 
 ## Repository Structure
 
@@ -69,6 +75,7 @@ jargonaut/
     ├── finetune.py          <-- Finetunes embeddings
     ├── generate_qa.py       <-- Synthetic Q&A generation
     ├── outputs/             <-- Timestamped output directories
+    ├── prepare_data.py      <-- Text chunking
     ├── prompts/
     │   └── custom_qa_generate_prompt.txt
     ├── run_all.py           <-- Orchestrates multi-step pipeline
@@ -88,6 +95,8 @@ jargonaut/
 * `src/outputs/`: Where each script’s run logs, config snapshots, and artifacts (like `train_dataset.json`, `finetuned_model/`, `doc_embeddings.pkl`) are stored in timestamped folders.
 
 ## Setup
+
+
 
 
 
@@ -187,6 +196,8 @@ training:
 ### How It Works
 
 
+
+
 1. `data_preparation`
    * `max_token_threshold`: Maximum tokens allowed before splitting a document into chunks.
    * `token_limit` & `token_overlap`: Control how we chunk large documents in `prepare_data.py`. Documents exceeding `max_token_threshold` get split into smaller parts, each capped at `token_limit` tokens (with some overlap).
@@ -221,7 +232,8 @@ training:
   ```
 
   before running.
-* **File-based Merging**: You can keep additional YAML files or partial configs if you want to layer multiple Hydra configs. For now, we only use a single file.
+
+  \
 
 ## Usage
 
@@ -235,6 +247,8 @@ python run_all.py --stage=all
 ```
 
 This:
+
+
 
 
 
@@ -258,6 +272,8 @@ After each stage, `pipeline_runner.py` looks at the newly created timestamped ou
 ### Individual Scripts
 
 If you prefer a more manual approach:
+
+
 
 
 

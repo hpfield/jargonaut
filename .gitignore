@@ -1,6 +1,10 @@
 llama-models/models/llama3_1
 llama-models/models/llama3
 llama-models/models/llama2
-govuk-policy-qa-pairs
+govuk-policy-qa-pairs/policy_papers_small.json
+govuk-policy-qa-pairs/policy_papers_truncated.json
+govuk-policy-qa-pairs/policy_papers.json
+govuk-policy-qa-pairs/README.md
+govuk-policy-qa-pairs/.gitattributes
 legislation_2021-2023_qa
 src/outputs/
