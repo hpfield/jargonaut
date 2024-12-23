@@ -42,7 +42,7 @@ Many organizations handle **jargon-heavy** or **domain-specific** documents wher
 3. **Building Document Embeddings**: We compute embeddings for an entire corpus using our finetuned model.
 4. **Serving a Local Search Demo**: A Flask-based UI allows users to enter a query and see top-matching documents (with truncated text, metadata, etc.).
 
-This repo builds on the success of a project by the [Incubator for Aritificial Intelligence](https://ai.gov.uk/), using a [huggingface dataset](https://huggingface.co/datasets/i-dot-ai/govuk-policy-qa-pairs) of government policy docuemnts. We improve data security with a locally running, open-source LLM (Llama-3.1) and focus the relevance of generated Q&A pairs by creating a custom version of the `generate_qa_embedding_pairs` function from llama-index.
+This repo builds on the success of a project by the [Incubator for Aritificial Intelligence](https://ai.gov.uk/), using a [huggingface dataset](https://huggingface.co/datasets/i-dot-ai/govuk-policy-qa-pairs) of government policy docuemnts. We improve data security with a locally running, open-source LLM (Llama-3.1) and focus the relevance of generated Q&A pairs by creating a custom version of the `generate_qa_embedding_pairs` function from llama-index. Aside from the dataset, this entire repository is created from scratch.
 
 ## Repository Structure
 
