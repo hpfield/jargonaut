@@ -13,6 +13,7 @@ By leveraging **Hydra** for centralized configuration, **LLMs** for question gen
 
 
 
+
 1. [Overview](#overview)
 2. [Repository Structure](#repository-structure)
 3. [Setup](#setup)
@@ -26,6 +27,7 @@ By leveraging **Hydra** for centralized configuration, **LLMs** for question gen
 ## Overview
 
 Many organizations handle **jargon-heavy** or **domain-specific** documents where off-the-shelf embeddings fall short. Jargonaut aims to **bridge that gap** by:
+
 
 
 
@@ -88,6 +90,7 @@ jargonaut/
 ## Setup
 
 
+
 1. **Clone this repository**:
 
 ```javascript
@@ -121,6 +124,105 @@ paths:
 ```
 
 
+## Configuring the Pipeline
+
+This repository uses **[Hydra](https://github.com/facebookresearch/hydra)** to manage configuration from a single YAML file, located by default at `src/config/config.yaml`. When you run any of the scripts (e.g., `prepare_data.py`, `generate_qa.py`, etc.) or use the `pipeline_runner.py`, Hydra automatically loads this config.
+
+Below is an example of the current `config.yaml`:
+
+```yaml
+defaults:
+- override hydra/job_logging: none
+- override hydra/hydra_logging: none
+
+hydra:
+  run:
+    dir: .
+
+data_preparation:
+  max_token_threshold: 3000
+  token_limit: 4000
+  token_overlap: 500
+  raw_data_file: "../govuk-policy-qa-pairs/policy_papers.json"
+  small_file_path: "../govuk-policy-qa-pairs/policy_papers_small.json"
+  output_file_path: "../govuk-policy-qa-pairs/policy_papers_truncated.json"
+
+llm:
+  ckpt_dir: ${oc.env:HOME}/.llama/checkpoints/Meta-Llama3.1-8B-Instruct
+  max_batch_size: 4
+  max_seq_len: 4096
+  model_parallel_size: null
+  temperature: 0.6
+  tokenizer_path: ../llama-models/models/llama3/api/tokenizer.model
+  top_p: 0.9
+
+paths:
+  data_file: ../govuk-policy-qa-pairs/policy_papers_truncated.json
+  doc_embeddings_path: outputs/build_embeddings/24-12-22_21-16-07/doc_embeddings.pkl
+  finetuned_model_path: outputs/finetune/24-12-22_21-19-32/finetuned_model
+  output_dir: outputs
+  prompt_file: prompts/custom_qa_generate_prompt.txt
+  system_prompt_file: prompts/custom_qa_generate_system.txt
+  train_dataset_path: outputs/generate_qa/24-12-22_21-19-10/train_dataset.json
+  val_dataset_path: outputs/generate_qa/24-12-22_21-19-10/val_dataset.json
+
+server:
+  debug: false
+  host: 127.0.0.1
+  port: 5000
+
+training:
+  epochs: 5
+  num_questions_per_chunk: 2
+  on_failure: continue
+  random_state: 42
+  retry_limit: 3
+  save_every: 500
+  test_size: 0.2
+  train_subset_size: NULL
+  val_subset_size: NULL
+```
+
+
+### How It Works
+
+
+1. `data_preparation`
+   * `max_token_threshold`: Maximum tokens allowed before splitting a document into chunks.
+   * `token_limit` & `token_overlap`: Control how we chunk large documents in `prepare_data.py`. Documents exceeding `max_token_threshold` get split into smaller parts, each capped at `token_limit` tokens (with some overlap).
+   * `raw_data_file`, `small_file_path`, `output_file_path`: Points to the files used or produced by the data-preparation stage. For instance, `prepare_data.py` will read from `raw_data_file`, create `small_file_path` with documents under the threshold, and generate `output_file_path` for the final truncated dataset.
+2. `llm`
+   * Defines model-related settings like `ckpt_dir` (checkpoint location), `max_seq_len`, `temperature`, etc.
+   * Notably uses `${oc.env:HOME}` in `ckpt_dir`, which means Hydra will expand the `HOME` environment variable to locate your LLM checkpoints.
+3. `paths`
+   * Points to **key data artifacts** like `data_file` (the truncated dataset used for subsequent scripts), `doc_embeddings_path`, `finetuned_model_path`, etc.
+   * `output_dir` is the base directory where run logs and artifacts are stored in timestamped subfolders.
+4. `server`
+   * Controls **Flask server** parameters (`host`, `port`, `debug`). This is used by `demo_server.py` when displaying search results in a browser.
+5. `training`
+   * Hyperparameters for finetuning and generation steps, such as `epochs`, `num_questions_per_chunk` for Q&A generation, `retry_limit` for LLM queries, and `test_size` for train/val splitting.
+   * `train_subset_size` and `val_subset_size` can be set to numeric values if you want to limit data for quick tests; `NULL` means it uses the full dataset.
+
+### Overriding Configuration
+
+* **Command-Line Overrides**: Hydra allows you to override any config parameter at runtime. For example:
+
+  ```javascript
+  bashCopy codepython pipeline_runner.py --stage=finetune training.epochs=10
+  
+  ```
+
+  This sets `training.epochs` to `10` instead of `5`, overriding the default in `config.yaml`.
+* **Environment Variables**: If a field references `$HOME` or uses syntax like `${oc.env:HOME}`, Hydra will expand it using the current environment. You can change it by setting:
+
+  ```javascript
+  bashCopy codeexport HOME=/path/to/your/home
+  
+  ```
+
+  before running.
+* **File-based Merging**: You can keep additional YAML files or partial configs if you want to layer multiple Hydra configs. For now, we only use a single file.
+
 ## Usage
 
 ### End-to-End Pipeline
@@ -133,6 +235,7 @@ python run_all.py --stage=all
 ```
 
 This:
+
 
 
 1. **Generates Q&A pairs** from your data (via LLM).
@@ -157,6 +260,7 @@ After each stage, `pipeline_runner.py` looks at the newly created timestamped ou
 If you prefer a more manual approach:
 
 
+
 1. **Generate Q&A** with `generate_qa.py`:
 
    ```
@@ -167,14 +271,14 @@ If you prefer a more manual approach:
 Creates `train_dataset.json` and `val_dataset.json`.
 
 
-2. **Finetune** with `finetune.py`:
+2\. **Finetune** with `finetune.py`:
 
-   ```
-   python finetune.py
-   ```
+```
+python finetune.py
+```
 
-   Loads Q&A data, trains a SentenceTransformers embedding model, and saves it in `finetuned_model/`.
-3. **Build Embeddings** with `build_embeddings.py`:
+Loads Q&A data, trains a SentenceTransformers embedding model, and saves it in `finetuned_model/`.
+3\. **Build Embeddings** with `build_embeddings.py`:
 
 ```
 python build_embeddings.py
@@ -183,7 +287,7 @@ python build_embeddings.py
 Encodes your entire corpus into embeddings (saved in `doc_embeddings.pkl`).
 
 
-4. **Serve** with `demo_server.py`:
+4\. **Serve** with `demo_server.py`:
 
 ```javascript
 python demo_server.py
@@ -193,8 +297,6 @@ Starts a **Flask** server on `http://127.0.0.1:5000`. Enter a query, see the top
 
 **Note**: Running scripts individually requires you to manually update paths in `src/config/config.yaml` (or pass Hydra overrides) so each script can find the output from the previous steps.
 
-
----
 
 ## Additional Notes
 
