@@ -117,8 +117,13 @@ conda activate jargonaut
 
 This installs PyTorch, SentenceTransformers, Flask, Hydra, and other dependencies listed in `environment.yml`.
 
+3\. **Unzip data** in `govuk-policy-qa-pairs`:
+```
+cd govuk-policy-qa-pairs
+gunzip policy_papers.json.gz
+```
 
-3\. **Adjust any paths** in `src/config/config.yaml`:
+4\. **Adjust any paths** in `src/config/config.yaml`:
 
 ```
 paths:
