@@ -125,7 +125,7 @@ gunzip policy_papers.json.gz
 
 4\. **Install Llama-3.1**:
 
-Download the [llama-models](https://github.com/meta-llama/llama-models/tree/main) git repo into the root of this repo and follow instructions for installation.
+Clone the [llama-models](https://github.com/meta-llama/llama-models/tree/main) git repo into the root of this repo and follow instructions for installation.
 
 When you reach the meta llama-downloads page, request access to **Llama 3.1: 405B, 70B & 8B**. For easiest integration with this project, accept the default suggestion to store the `.llama` driectory in your home `~` directory.
 
