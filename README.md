@@ -8,6 +8,8 @@
 
 By leveraging **Hydra** for centralized configuration, **LLMs** for question generation, and **SentenceTransformers** for embeddings finetuning, Jargonaut offers a practical, **domain-adaptive** approach to searching specialized documents.
 
+This repository has been tested on Ubuntu 22.04 and has the following [hardware requirements](https://llamaimodel.com/requirements/#8B).
+
 
 ## Table of Contents
 
