@@ -4,6 +4,13 @@ defaults:
 hydra:
   run:
     dir: .
+data_preparation:
+  max_token_threshold: 3000
+  token_limit: 4000
+  token_overlap: 500
+  raw_data_file: "../govuk-policy-qa-pairs/policy_papers.json"
+  small_file_path: "../govuk-policy-qa-pairs/policy_papers_small.json"
+  output_file_path: "../govuk-policy-qa-pairs/policy_papers_truncated.json"
 llm:
   ckpt_dir: ${oc.env:HOME}/.llama/checkpoints/Meta-Llama3.1-8B-Instruct
   max_batch_size: 4

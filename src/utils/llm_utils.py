@@ -7,6 +7,7 @@ import re
 import uuid
 import warnings
 from typing import List
+import tiktoken
 
 # Ensure repo root is discoverable
 repo_root = os.popen("git rev-parse --show-toplevel").read().strip()
@@ -41,7 +42,6 @@ from tqdm import tqdm
 
 
 def get_generator(logger: logging.Logger, ckpt_dir: str, tokenizer_path: str, max_seq_len: int, max_batch_size: int, model_parallel_size):
-    logger.info("Initializing the Llama generator.")
     generator = Llama.build(
         ckpt_dir=ckpt_dir,
         tokenizer_path=tokenizer_path,
@@ -67,6 +67,7 @@ def generate_qa_embedding_pairs_chat_style(
     queries = {}
     corpus = {}
     relevant_docs = {}
+    enc = tiktoken.get_encoding("gpt2")
 
     node_dict = {
         node.node_id: node.get_content(metadata_mode=MetadataMode.NONE)
@@ -99,10 +100,11 @@ def generate_qa_embedding_pairs_chat_style(
                 out_message = result.generation
                 response = out_message.content.strip()
                 success = True
+                # logger.info(f"Success when prompt is {len(enc.encode(qa_system_prompt + text))} tokens.")
                 break
             except Exception as e:
                 retry_count += 1
-                logger.warning(f"Error querying LLM: {e}. Retrying {retry_count}/{retry_limit}...")
+                logger.warning(f"Error querying LLM: {e}. Full prompt is {len(enc.encode(qa_system_prompt + text))} tokens. Retrying {retry_count}/{retry_limit}...")
 
         if not success:
             if on_failure == "fail":
