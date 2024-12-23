@@ -123,18 +123,22 @@ cd govuk-policy-qa-pairs
 gunzip policy_papers.json.gz
 ```
 
-4\. **Adjust any paths** in `src/config/config.yaml`:
+4\. **Install Llama-3.1**:
+
+Download the [llama-models](https://github.com/meta-llama/llama-models/tree/main) git repo into the root of this repo and follow instructions for installation.
+
+When you reach the meta llama-downloads page, request access to **Llama 3.1: 405B, 70B & 8B**. For easiest integration with this project, accept the default suggestion to store the `.llama` driectory in your home `~` directory.
+
+5\. **Adjust any paths** in `src/config/config.yaml`:
 
 ```
-paths:
-  data_file: "../govuk-policy-qa-pairs/policy_papers_small.json"
-  output_dir: "outputs"
-  prompt_file: "prompts/custom_qa_generate_prompt.txt"
-  # e.g., these get updated dynamically or you can set them manually
-  train_dataset_path: "outputs/generate_qa/<timestamp>/train_dataset.json"
-  val_dataset_path:   "outputs/generate_qa/<timestamp>/val_dataset.json"
-  finetuned_model_path: "outputs/finetune/<timestamp>/finetuned_model"
-  doc_embeddings_path:   "outputs/build_embeddings/<timestamp>/doc_embeddings.pkl"
+llm:
+  ckpt_dir: ${oc.env:HOME}/.llama/checkpoints/Meta-Llama3.1-8B-Instruct
+  tokenizer_path: ../llama-models/models/llama3/api/tokenizer.model
+data_preparation:
+  raw_data_file: "../govuk-policy-qa-pairs/policy_papers.json"
+  small_file_path: "../govuk-policy-qa-pairs/policy_papers_small.json"
+  output_file_path: "../govuk-policy-qa-pairs/policy_papers_truncated.json"
 ```
 
 
