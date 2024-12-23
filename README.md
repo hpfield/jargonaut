@@ -23,6 +23,7 @@ This repository has been tested on Ubuntu 22.04 and has the following [hardware 
 
 
 
+
 1. [Overview](#overview)
 2. [Repository Structure](#repository-structure)
 3. [Setup](#setup)
@@ -36,6 +37,7 @@ This repository has been tested on Ubuntu 22.04 and has the following [hardware 
 ## Overview
 
 Many organizations handle **jargon-heavy** or **domain-specific** documents where off-the-shelf embeddings fall short. Jargonaut aims to **bridge that gap** by:
+
 
 
 
@@ -98,6 +100,7 @@ jargonaut/
 * `src/outputs/`: Where each script’s run logs, config snapshots, and artifacts (like `train_dataset.json`, `finetuned_model/`, `doc_embeddings.pkl`) are stored in timestamped folders.
 
 ## Setup
+
 
 
 
@@ -215,6 +218,7 @@ training:
 
 
 
+
 1. `data_preparation`
    * `max_token_threshold`: Maximum tokens allowed before splitting a document into chunks.
    * `token_limit` & `token_overlap`: Control how we chunk large documents in `prepare_data.py`. Documents exceeding `max_token_threshold` get split into smaller parts, each capped at `token_limit` tokens (with some overlap).
@@ -236,7 +240,7 @@ training:
 * **Command-Line Overrides**: Hydra allows you to override any config parameter at runtime. For example:
 
   ```
-  bashCopy codepython run_all.py --stage=finetune training.epochs=10
+  python run_all.py --stage=finetune training.epochs=10
   
   ```
 
@@ -244,7 +248,7 @@ training:
 * **Environment Variables**: If a field references `$HOME` or uses syntax like `${oc.env:HOME}`, Hydra will expand it using the current environment. You can change it by setting:
 
   ```
-  bashCopy codeexport HOME=/path/to/your/home
+  export HOME=/path/to/your/home
   
   ```
 
@@ -256,6 +260,7 @@ training:
 ### Data Preparation
 
 `prepare_data.py` breaks up the larger datapoints into multiple text chunks. If a datapoint contains more than the `max_token_threshold` specified in the config, it's broken up into multiple datapoints. Setting an appropriate threshold prevents the LLM from failing due to lack of resources (a threshold of 3000 works well for a system with 24GB GPU).
+
 ```
 cd src
 python prepare_data.py
@@ -271,6 +276,7 @@ python run_all.py --stage=all
 ```
 
 This:
+
 
 
 

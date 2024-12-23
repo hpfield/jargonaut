@@ -77,11 +77,12 @@ def main(cfg: DictConfig):
 
     finetune_engine = SentenceTransformersFinetuneEngine(
         dataset=train_dataset,
-        model_id="BAAI/bge-small-en",
+        model_id="BAAI/bge-large-en",
         model_output_path=str(Path(run_output_dir) / "finetuned_model"),
         val_dataset=val_dataset,
         epochs=cfg.training.epochs,
         device='cuda',  
+        batch_size=cfg.training.batch_size
     )
     finetune_engine.finetune()
     embed_model = finetune_engine.get_finetuned_model()

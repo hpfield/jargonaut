@@ -4,13 +4,6 @@ defaults:
 hydra:
   run:
     dir: .
-data_preparation:
-  max_token_threshold: 3000
-  token_limit: 4000
-  token_overlap: 500
-  raw_data_file: "../govuk-policy-qa-pairs/policy_papers.json"
-  small_file_path: "../govuk-policy-qa-pairs/policy_papers_small.json"
-  output_file_path: "../govuk-policy-qa-pairs/policy_papers_truncated.json"
 llm:
   ckpt_dir: ${oc.env:HOME}/.llama/checkpoints/Meta-Llama3.1-8B-Instruct
   max_batch_size: 4
@@ -21,18 +14,19 @@ llm:
   top_p: 0.9
 paths:
   data_file: ../govuk-policy-qa-pairs/policy_papers_truncated.json
-  doc_embeddings_path: outputs/build_embeddings/24-12-22_21-16-07/doc_embeddings.pkl
-  finetuned_model_path: outputs/finetune/24-12-22_21-19-32/finetuned_model
+  doc_embeddings_path: outputs/build_embeddings/24-12-23_16-58-28/doc_embeddings.pkl
+  finetuned_model_path: outputs/finetune/24-12-23_16-10-21/finetuned_model
   output_dir: outputs
   prompt_file: prompts/custom_qa_generate_prompt.txt
   system_prompt_file: prompts/custom_qa_generate_system.txt
-  train_dataset_path: outputs/generate_qa/24-12-22_21-19-10/train_dataset.json
-  val_dataset_path: outputs/generate_qa/24-12-22_21-19-10/val_dataset.json
+  train_dataset_path: outputs/generate_qa/24-12-23_10-09-54/train_dataset.json
+  val_dataset_path: outputs/generate_qa/24-12-23_10-09-54/val_dataset.json
 server:
   debug: false
   host: 127.0.0.1
   port: 5000
 training:
+  batch_size: 20
   epochs: 5
   num_questions_per_chunk: 2
   on_failure: continue
@@ -40,6 +34,5 @@ training:
   retry_limit: 3
   save_every: 500
   test_size: 0.2
-  # Optionally select subset of data for testing
-  train_subset_size: NULL 
-  val_subset_size: NULL
+  train_subset_size: null
+  val_subset_size: null
