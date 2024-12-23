@@ -1,6 +1,4 @@
-llama-models/models/llama3_1
-llama-models/models/llama3
-llama-models/models/llama2
+llama-models
 govuk-policy-qa-pairs/policy_papers_small.json
 govuk-policy-qa-pairs/policy_papers_truncated.json
 govuk-policy-qa-pairs/policy_papers.json
