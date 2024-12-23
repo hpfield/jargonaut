@@ -84,7 +84,6 @@ jargonaut/
 
 ### Key Directories
 
-* `eda/`: Notebooks exploring or analyzing the data (EDA = Exploratory Data Analysis).
 * `govuk-policy-qa-pairs/` & `legislation_2021-2023_qa/`: Example data directories with specialized text.
 * `llama-models/`: Contains local Llama code and references (if you use the Llama-based generator).
 * `src/outputs/`: Where each script’s run logs, config snapshots, and artifacts (like `train_dataset.json`, `finetuned_model/`, `doc_embeddings.pkl`) are stored in timestamped folders.
