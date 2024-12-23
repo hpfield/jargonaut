@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-
 import hydra
 from omegaconf import DictConfig, OmegaConf
 import json
@@ -17,7 +15,32 @@ logging.getLogger("tensorflow").setLevel(logging.ERROR)
 from utils.logger_utils import setup_logger
 from llama_index.finetuning import SentenceTransformersFinetuneEngine
 from llama_index.core.evaluation import EmbeddingQAFinetuneDataset
-from utils.llm_utils import evaluate_embeddings, evaluate_st
+from llama_index.core.schema import TextNode
+
+def evaluate_embeddings(logger: logging.Logger, val_dataset, embed_model, top_k=5):
+    from llama_index.core import VectorStoreIndex
+    corpus = val_dataset.corpus
+    queries = val_dataset.queries
+    relevant_docs = val_dataset.relevant_docs
+
+    nodes = [TextNode(id_=id_, text=text) for id_, text in corpus.items()]
+    index = VectorStoreIndex(nodes, embed_model=embed_model, show_progress=True)
+    retriever = index.as_retriever(similarity_top_k=top_k)
+
+    eval_results = []
+    for query_id, query in queries.items():
+        retrieved_nodes = retriever.retrieve(query)
+        retrieved_ids = [node.node.node_id for node in retrieved_nodes]
+        expected_id = relevant_docs[query_id][0]
+        is_hit = expected_id in retrieved_ids
+
+        eval_results.append({
+            "is_hit": is_hit,
+            "retrieved": retrieved_ids,
+            "expected": expected_id,
+            "query": query_id,
+        })
+    return eval_results
 
 
 @hydra.main(version_base="1.2", config_path="config", config_name="config")
@@ -39,8 +62,6 @@ def main(cfg: DictConfig):
         f.write(OmegaConf.to_yaml(cfg))
     logger.info(f"Config saved to: {config_copy_path}")
 
-    # Where do we load the QA pairs from? Typically from the same Hydra run folder,
-    # or pass them as Hydra overrides (or set them in config).
     train_dataset_path = cfg.paths.train_dataset_path
     val_dataset_path   = cfg.paths.val_dataset_path
 
@@ -60,7 +81,7 @@ def main(cfg: DictConfig):
         model_output_path=str(Path(run_output_dir) / "finetuned_model"),
         val_dataset=val_dataset,
         epochs=cfg.training.epochs,
-        device='cuda',  # or "cpu" if you prefer
+        device='cuda',  
     )
     finetune_engine.finetune()
     embed_model = finetune_engine.get_finetuned_model()

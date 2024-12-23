@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-
 import hydra
 from omegaconf import DictConfig, OmegaConf
 import json
@@ -7,7 +5,6 @@ from pathlib import Path
 import torch
 from sklearn.model_selection import train_test_split
 
-# Import from your utils
 from utils.logger_utils import setup_logger
 from utils.data_utils import process_data_to_nodes
 from utils.llm_utils import (
@@ -64,7 +61,7 @@ def main(cfg: DictConfig):
     with open(system_prompt_file, "r") as pf:
         system_prompt_str = pf.read()
 
-    # 7. Instantiate the LLM generator
+    # 7. Instantiate LLM generator
     logger.info("Initializing the Llama generator.")
     generator = get_generator(
         logger=logger,

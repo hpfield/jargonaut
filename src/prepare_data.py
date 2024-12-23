@@ -7,7 +7,6 @@ import json
 from tqdm import tqdm
 from pathlib import Path
 
-# Import from your pipeline's utils
 from utils.logger_utils import setup_logger
 
 @hydra.main(version_base="1.2", config_path="config", config_name="config")
@@ -45,13 +44,9 @@ def main(cfg: DictConfig):
     df = pd.read_json(raw_data_path)
     logger.info(f"Size of dataset: {len(df)}")
 
-    # Combine 'header' + 'content' for token counting
+    # Count tokens for each entry
     df['combined'] = df['header'] + " " + df['content']
-
-    # Load TikToken tokenizer
     enc = tiktoken.get_encoding("gpt2")
-
-    # Count tokens for each row
     df['token_count'] = df['combined'].apply(lambda text: len(enc.encode(text)))
 
     # Filter large docs
@@ -99,7 +94,6 @@ def main(cfg: DictConfig):
 
         return chunks
 
-    # Stats/tracking
     chunk_stats = []
     new_entries = []
 
@@ -147,7 +141,7 @@ def main(cfg: DictConfig):
     chunk_stats_df = pd.DataFrame(chunk_stats, columns=['url', 'num_chunks'])
     logger.info(f"Chunk stats:\n{chunk_stats_df.describe()}")
 
-    # Final token statistics
+    # Final token stats
     most_tokens = df_combined['token_count'].max()
     least_tokens = df_combined['token_count'].min()
     average_tokens = df_combined['token_count'].mean()

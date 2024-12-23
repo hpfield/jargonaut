@@ -15,7 +15,6 @@ if repo_root and repo_root not in sys.path:
     sys.path.append(repo_root)
 
 # Set environment variables needed by PyTorch and torch.distributed
-# os.environ['PYTORCH_CUDA_ALLOC_CONF'] = 'expandable_segments:True'
 os.environ['RANK'] = '0'
 os.environ['WORLD_SIZE'] = '1'
 os.environ['MASTER_ADDR'] = 'localhost'
@@ -100,7 +99,6 @@ def generate_qa_embedding_pairs_chat_style(
                 out_message = result.generation
                 response = out_message.content.strip()
                 success = True
-                # logger.info(f"Success when prompt is {len(enc.encode(qa_system_prompt + text))} tokens.")
                 break
             except Exception as e:
                 retry_count += 1
@@ -140,95 +138,3 @@ def generate_qa_embedding_pairs_chat_style(
     logger.info("Final dataset saved.")
 
     return dataset
-
-
-def finetune_embeddings(
-    logger: logging.Logger,
-    train_nodes,
-    val_nodes,
-    generator,
-    output_path: str,
-    num_questions_per_chunk: int,
-    retry_limit: int,
-    on_failure: str,
-    save_every: int
-):
-    logger.info("Generating QA pairs for training set.")
-    train_dataset = generate_qa_embedding_pairs_chat_style(
-        logger=logger,
-        nodes=train_nodes,
-        generator=generator,
-        qa_generate_prompt_str="",  # We'll pass the actual prompt in main if desired
-        num_questions_per_chunk=num_questions_per_chunk,
-        retry_limit=retry_limit,
-        on_failure=on_failure,
-        save_every=save_every,
-        output_path=str(Path(output_path) / "train_dataset.json"),
-    )
-
-    logger.info("Generating QA pairs for validation set.")
-    val_dataset = generate_qa_embedding_pairs_chat_style(
-        logger=logger,
-        nodes=val_nodes,
-        generator=generator,
-        qa_generate_prompt_str="",  # We'll pass the actual prompt in main
-        num_questions_per_chunk=num_questions_per_chunk,
-        retry_limit=retry_limit,
-        on_failure=on_failure,
-        save_every=save_every,
-        output_path=str(Path(output_path) / "val_dataset.json"),
-    )
-
-    torch.cuda.empty_cache()
-
-    finetune_engine = SentenceTransformersFinetuneEngine(
-        train_dataset=train_dataset,
-        model_id="BAAI/bge-small-en",
-        model_output_path=str(Path(output_path) / "finetuned_model"),
-        val_dataset=val_dataset,
-        device='cuda',
-    )
-
-    finetune_engine.finetune()
-    return finetune_engine.get_finetuned_model()
-
-
-def evaluate_embeddings(logger: logging.Logger, val_dataset, embed_model, top_k=5):
-    from llama_index.core import VectorStoreIndex
-    corpus = val_dataset.corpus
-    queries = val_dataset.queries
-    relevant_docs = val_dataset.relevant_docs
-
-    nodes = [TextNode(id_=id_, text=text) for id_, text in corpus.items()]
-    index = VectorStoreIndex(nodes, embed_model=embed_model, show_progress=True)
-    retriever = index.as_retriever(similarity_top_k=top_k)
-
-    eval_results = []
-    for query_id, query in queries.items():
-        retrieved_nodes = retriever.retrieve(query)
-        retrieved_ids = [node.node.node_id for node in retrieved_nodes]
-        expected_id = relevant_docs[query_id][0]
-        is_hit = expected_id in retrieved_ids
-
-        eval_results.append({
-            "is_hit": is_hit,
-            "retrieved": retrieved_ids,
-            "expected": expected_id,
-            "query": query_id,
-        })
-    return eval_results
-
-
-def evaluate_st(logger: logging.Logger, dataset, model_id, output_path, name):
-    import pandas as pd
-    from sentence_transformers.evaluation import InformationRetrievalEvaluator
-    from sentence_transformers import SentenceTransformer
-
-    corpus = dataset.corpus
-    queries = dataset.queries
-    relevant_docs = dataset.relevant_docs
-
-    evaluator = InformationRetrievalEvaluator(queries, corpus, relevant_docs, name=name)
-    model = SentenceTransformer(model_id)
-    Path(output_path).mkdir(exist_ok=True, parents=True)
-    return evaluator(model, output_path=output_path)

@@ -8,14 +8,11 @@ import shutil
 import time
 import yaml
 
-# Adjust these script names if you use different files
 GENERATE_QA_SCRIPT = "generate_qa.py"
 FINETUNE_SCRIPT = "finetune.py"
 BUILD_EMBEDDINGS_SCRIPT = "build_embeddings.py"
 DEMO_SERVER_SCRIPT = "demo_server.py"
 
-# Where the hydra outputs go for each stage
-# (matches your directory structure: outputs/<stage>/YY-MM-DD_HH-MM-SS)
 STAGE_OUTPUT_DIRS = {
     "generate_qa": "outputs/generate_qa",
     "finetune": "outputs/finetune",
@@ -23,7 +20,7 @@ STAGE_OUTPUT_DIRS = {
     "demo_server": "outputs/demo_server",
 }
 
-# Regex for your Hydra-run folder naming convention: YY-MM-DD_HH-MM-SS
+# Regex for Hydra-run folder naming convention: YY-MM-DD_HH-MM-SS
 TIMESTAMP_REGEX = re.compile(r"^\d{2}-\d{2}-\d{2}_\d{2}-\d{2}-\d{2}$")
 
 def parse_args():
@@ -64,7 +61,7 @@ def get_latest_output_dir(stage_name: str) -> Path:
     if not candidates:
         raise FileNotFoundError(f"No timestamped output directory found in {base_dir}")
 
-    # Sort them by modification time descending, pick the newest
+    # Sort by modification time descending, pick the newest
     candidates.sort(key=lambda d: d.stat().st_mtime, reverse=True)
     return candidates[0]
 
@@ -81,16 +78,12 @@ def run_stage(script_name: str):
 def main():
     args = parse_args()
 
-    # Path to your shared config file
-    # Adjust if you store it elsewhere
     config_path = Path("config") / "config.yaml"
     if not config_path.exists():
         raise FileNotFoundError(f"Could not find config.yaml at {config_path}")
 
-    # Load initial config
     cfg = load_config(config_path)
 
-    # If user chooses "all", we define the full pipeline order
     pipeline_order = []
     if args.stage == "all":
         pipeline_order = ["generate_qa", "finetune", "build_embeddings", "demo_server"]
@@ -121,14 +114,8 @@ def main():
             cfg["paths"]["doc_embeddings_path"] = str(latest_dir / "doc_embeddings.pkl")
 
         elif stage_name == "demo_server":
-            # If running the server, we typically want to run it last
-            # or after the config is updated. We do NOT forcibly kill the server,
-            # so the script will block until the server is exited.
-            # (If you want non-blocking, you can do so, but typically you want to see logs.)
             run_stage(DEMO_SERVER_SCRIPT)
-            # This stage doesn't produce new data to pass on, so no config update needed
 
-        # Save updated config so subsequent stages pick up these changes
         save_config(config_path, cfg)
         print(f"Updated {config_path} for stage '{stage_name}' with new paths.")
 

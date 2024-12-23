@@ -11,7 +11,6 @@ from utils.logger_utils import setup_logger
 
 app = Flask(__name__)
 
-# Globals loaded once, then used in our Flask routes.
 EMBED_MODEL = None
 DOC_EMBEDDINGS = None
 
@@ -47,7 +46,7 @@ def index():
         for r in results:
             key = (r["header"], r["url"])
             truncated_text = r["text"]
-            max_len = 300  # or any length you want
+            max_len = 300  # For truncating and looking neater
             if len(truncated_text) > max_len:
                 truncated_text = truncated_text[:max_len] + "..."
             r["text"] = truncated_text
@@ -67,13 +66,11 @@ def index():
                 unique_key = (r["header"], r["url"], r["id"])
                 grouped_results[unique_key] = r
 
-        # final list
         final_results = list(grouped_results.values())
 
-        # Optionally re-sort them by similarity
+        # Sort by similarity
         final_results.sort(key=lambda x: x["similarity"], reverse=True)
 
-        # take top K
         top_results = final_results[:5]
 
 
@@ -87,7 +84,6 @@ def cosine_similarity(a, b):
     return float(np.dot(a, b) / (np.linalg.norm(a) * np.linalg.norm(b)))
 
 
-# A slightly more polished Bootstrap-based HTML template
 TEMPLATE = """
 <!DOCTYPE html>
 <html lang="en">

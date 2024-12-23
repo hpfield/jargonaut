@@ -6,3 +6,4 @@ govuk-policy-qa-pairs/README.md
 govuk-policy-qa-pairs/.gitattributes
 legislation_2021-2023_qa
 src/outputs/
+src/checkpoints

@@ -8,7 +8,7 @@ def process_data_to_nodes(data_list, logger: logging.Logger = None):
     for item in data_list:
         combined_text = f"{item['header']}\n{item['content']}"
 
-        # We store metadata as a dictionary. 
+        # Store metadata as a dictionary. 
         metadata = {
             "header": item.get("header", ""),
             "url": item.get("url", ""),
