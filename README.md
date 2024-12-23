@@ -322,7 +322,7 @@ Starts a **Flask** server on `http://127.0.0.1:5000`. Enter a query, see the top
 
 * **LLM Integration**: If you use the `Llama` generator, ensure your `ckpt_dir` and `tokenizer_path` in `config.yaml` are valid.
 * **Data Exploration**: The `eda/` folder has notebooks (like `policy-data.ipynb`) for exploring the dataset.
-* **Custom Data**: Replace `paths.data_file` with your own domain-specific JSON or CSV. Then retrain the pipeline for your specialized text.
+* **Custom Data**: Replace `paths.data_file` with your own domain-specific JSON or CSV. Then retrain the pipeline for your specialized text. It is expected that your data file will be json and contain fields `url`, `header` and `content`. Any deviation from this will require code refactoring across all pipeline files in `src/`.
 
 
 
