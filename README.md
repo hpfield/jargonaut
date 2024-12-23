@@ -28,7 +28,6 @@ This repository has been tested on Ubuntu 22.04 and has the following [hardware 
    * [End-to-End Pipeline](#end-to-end-pipeline)
    * [Individual Scripts](#individual-scripts)
 6. [Additional Notes](#additional-notes)
-7. [License](#license)
 
 
 ## Overview
