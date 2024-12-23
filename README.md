@@ -20,6 +20,9 @@ This repository has been tested on Ubuntu 22.04 and has the following [hardware 
 
 
 
+
+
+
 1. [Overview](#overview)
 2. [Repository Structure](#repository-structure)
 3. [Setup](#setup)
@@ -42,12 +45,15 @@ Many organizations handle **jargon-heavy** or **domain-specific** documents wher
 
 
 
+
+
+
 1. **Creating Synthetic Q&A**: We prompt an LLM to generate realistic user queries for each document.
-2. **Finetuning**: We train an embeddings model on these Q&A pairs, enhancing its understanding of specialized terminology.
+2. **Finetuning**: We train an embeddings model on these Q&A pairs, enhancing its understanding of specialised terminology.
 3. **Building Document Embeddings**: We compute embeddings for an entire corpus using our finetuned model.
 4. **Serving a Local Search Demo**: A Flask-based UI allows users to enter a query and see top-matching documents (with truncated text, metadata, etc.).
 
-This repo builds on the success of a project by the [Incubator for Aritificial Intelligence](https://ai.gov.uk/), using a [huggingface dataset](https://huggingface.co/datasets/i-dot-ai/govuk-policy-qa-pairs) of government policy docuemnts. We improve data security with a locally running, open-source LLM (Llama-3.1) and focus the relevance of generated Q&A pairs by creating a custom version of the `generate_qa_embedding_pairs` function from llama-index. Aside from the dataset, this entire repository is created from scratch.
+This repo builds on the success of a project by the [Incubator for Aritificial Intelligence](https://ai.gov.uk/), using a [huggingface dataset](https://huggingface.co/datasets/i-dot-ai/govuk-policy-qa-pairs) of government policy documents. We improve data security with a locally running, open-source LLM (Llama-3.1) and focus the relevance of generated Q&A pairs by creating a custom version of the `generate_qa_embedding_pairs` function from llama-index. Aside from the dataset, this entire repository is created from scratch.
 
 ## Repository Structure
 
@@ -96,6 +102,9 @@ jargonaut/
 
 
 
+
+
+
 1. **Clone this repository**:
 
 ```
@@ -140,7 +149,7 @@ data_preparation:
 
 ## Configuring the Pipeline
 
-This repository uses **[Hydra](https://github.com/facebookresearch/hydra)** to manage configuration from a single YAML file, located by default at `src/config/config.yaml`. When you run any of the scripts (e.g., `prepare_data.py`, `generate_qa.py`, etc.) or use the `pipeline_runner.py`, Hydra automatically loads this config.
+This repository uses **[Hydra](https://github.com/facebookresearch/hydra)** to manage configuration from a single YAML file, located by default at `src/config/config.yaml`. When you run any of the scripts (e.g., `prepare_data.py`, `generate_qa.py`, etc.) or use `run_all.py`, Hydra automatically loads this config.
 
 Below is an example of the current `config.yaml`:
 
@@ -203,6 +212,9 @@ training:
 
 
 
+
+
+
 1. `data_preparation`
    * `max_token_threshold`: Maximum tokens allowed before splitting a document into chunks.
    * `token_limit` & `token_overlap`: Control how we chunk large documents in `prepare_data.py`. Documents exceeding `max_token_threshold` get split into smaller parts, each capped at `token_limit` tokens (with some overlap).
@@ -241,6 +253,14 @@ training:
 
 ## Usage
 
+### Data Preparation
+
+`prepare_data.py` breaks up the larger datapoints into multiple text chunks. If a datapoint contains more than the `max_token_threshold` specified in the config, it's broken up into multiple datapoints. Setting an appropriate threshold prevents the LLM from failing due to lack of resources (a threshold of 3000 works well for a system with 24GB GPU).
+```
+cd src
+python prepare_data.py
+```
+
 ### End-to-End Pipeline
 
 `run_all.py` automates the entire process. For example, run everything in sequence:
@@ -251,6 +271,9 @@ python run_all.py --stage=all
 ```
 
 This:
+
+
+
 
 
 1. **Generates Q&A pairs** from your data (via LLM).
@@ -274,13 +297,12 @@ After each stage, `pipeline_runner.py` looks at the newly created timestamped ou
 
 If you prefer a manual approach:
 
+1\. **Generate Q&A** with `generate_qa.py`:
 
-1. **Generate Q&A** with `generate_qa.py`:
-
-   ```
-   cd src
-   python generate_qa.py
-   ```
+```
+cd src
+python generate_qa.py
+```
 
 Creates `train_dataset.json` and `val_dataset.json`.
 
