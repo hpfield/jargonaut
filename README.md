@@ -116,7 +116,7 @@ jargonaut/
 1. **Clone this repository**:
 
 ```
-git clone https://github.com/YourUsername/jargonaut.git
+git clone https://github.com/hpfield/jargonaut.git
 cd jargonaut
 ```
 
