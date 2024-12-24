@@ -230,7 +230,7 @@ training:
    * `raw_data_file`, `small_file_path`, `output_file_path`: Points to the files used or produced by the data-preparation stage. For instance, `prepare_data.py` will read from `raw_data_file`, create `small_file_path` with documents under the threshold, and generate `output_file_path` for the final truncated dataset.
 2. `llm`
    * Defines model-related settings like `ckpt_dir` (checkpoint location), `max_seq_len`, `temperature`, etc.
-   * Notably uses `${oc.env:HOME}` in `ckpt_dir`, which means Hydra will expand the `HOME` environment variable to locate your LLM checkpoints.
+   * Notably uses `${oc.env:HOME}` in `ckpt_dir`, which means Hydra will expand the `HOME` environment variable to locate LLM checkpoints.
 3. `paths`
    * Points to **key data artifacts** like `data_file` (the truncated dataset used for subsequent scripts), `doc_embeddings_path`, `finetuned_model_path`, etc.
    * `output_dir` is the base directory where run logs and artifacts are stored in timestamped subfolders.
